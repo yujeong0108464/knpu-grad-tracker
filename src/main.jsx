@@ -16,7 +16,8 @@ import {
   Copy,
   Download,
   Upload,
-  RefreshCw
+  RefreshCw,
+  Heart
 } from 'lucide-react';
 
 const App = () => {
@@ -37,8 +38,6 @@ const App = () => {
   });
 
   // --- Local Storage Logic ---
-  
-  // 1. Load Data
   useEffect(() => {
     const savedData = localStorage.getItem('knpu_planner_data');
     if (savedData) {
@@ -55,7 +54,6 @@ const App = () => {
     }
   }, []);
 
-  // 2. Auto Save
   useEffect(() => {
     const dataToSave = {
       dept,
@@ -73,7 +71,6 @@ const App = () => {
     const encoded = btoa(encodeURIComponent(data));
     setSyncCode(encoded);
     
-    // Copy to clipboard fallback
     const textArea = document.createElement("textarea");
     textArea.value = encoded;
     document.body.appendChild(textArea);
@@ -105,22 +102,21 @@ const App = () => {
   const data = {
     liberal: {
       mandatory: [
-        { id: 'l_stat', name: '기초통계학', credit: 2, cat: '기초교양' },
-        { id: 'l_hist', name: '한국경찰사연구', credit: 2, cat: '심화교양', code: 'R' },
-        { id: 'l_ethic', name: '경찰윤리', credit: 2, cat: '심화교양', code: 'R' },
-        { id: 'l_psych', name: '심리학', credit: 3, cat: '심화교양' },
-        { id: 'l_econ', name: '경제학원론', credit: 3, cat: '심화교양' },
-        { id: 'l_leader', name: '리더십아카데미', credit: 2, cat: '인성교양' },
-        ...Array.from({ length: 8 }, (_, i) => ({ id: `m_${i+1}`, name: `무도 ${['I','II','III','IV','V','VI','VII','VIII'][i]}`, credit: 1, cat: '인성교양' }))
+        { id: 'l_stat', name: '기초통계학', credit: 2, code: 'R' },
+        { id: 'l_hist', name: '한국경찰사연구', credit: 2, code: 'R' },
+        { id: 'l_ethic', name: '경찰윤리', credit: 2, code: 'R' },
+        { id: 'l_psych', name: '심리학', credit: 3 },
+        { id: 'l_econ', name: '경제학원론', credit: 3 },
+        { id: 'l_leader', name: '리더십아카데미', credit: 2 },
+        ...Array.from({ length: 8 }, (_, i) => ({ id: `m_${i+1}`, name: `무도 ${['I','II','III','IV','V','VI','VII','VIII'][i]}`, credit: 1 }))
       ],
       electives: [
         { id: 'le_1', name: '공직자의 글쓰기', credit: 2, code: 'R' },
         { id: 'le_2', name: '논리와 비판적 사고', credit: 2, code: 'R' },
+        { id: 'le_15', name: '성인지 관점의 이해', credit: 2, code: 'G' },
         { id: 'le_3', name: '사고와 표현 세미나', credit: 2, code: 'R' },
         { id: 'le_9', name: '한국사의 재조명', credit: 2, code: 'R' },
         { id: 'le_10', name: '세계문명의 충돌과 화해', credit: 2, code: 'R' },
-        { id: 'le_11', name: '인간과 문학', credit: 2, code: 'R' },
-        { id: 'le_15', name: '성인지 관점의 이해', credit: 2, code: 'G' },
       ]
     },
     generalMajor: {
@@ -133,42 +129,25 @@ const App = () => {
         { id: 'gf_11', name: '인사행정론', credit: 3 }, { id: 'gf_12', name: '재무행정론', credit: 3 },
       ],
       mandatory: {
-        law: [
-          { id: 'lm_1', name: '일반행정법', credit: 3 }, { id: 'lm_2', name: '법과학개론', credit: 2 },
-          { id: 'lm_3', name: '기업법과 범죄', credit: 3 }, { id: 'lm_4', name: '경찰민법 II(또는 물권법)', credit: 3 },
-        ],
-        admin: [
-          { id: 'am_1', name: '사회과학방법론', credit: 3 }, { id: 'am_2', name: '정책형성론', credit: 3 },
-          { id: 'am_3', name: '정책평가론', credit: 2 }, { id: 'am_4', name: '범죄예방론', credit: 3 },
-        ]
+        law: [{ id: 'lm_1', name: '일반행정법', credit: 3 }, { id: 'lm_2', name: '법과학개론', credit: 2 }, { id: 'lm_3', name: '기업법과 범죄', credit: 3 }, { id: 'lm_4', name: '경찰민법 II', credit: 3 }],
+        admin: [{ id: 'am_1', name: '사회과학방법론', credit: 3 }, { id: 'am_2', name: '정책형성론', credit: 3 }, { id: 'am_3', name: '정책평가론', credit: 2 }, { id: 'am_4', name: '범죄예방론', credit: 3 }]
       },
       electives: {
-        law: [
-          { id: 'le_l1', name: '전공심화세미나 I', credit: 2 }, { id: 'le_l2', name: '전공심화세미나 II', credit: 2 },
-          { id: 'le_l3', name: '경찰과 인권', credit: 2, code: 'H' }, { id: 'le_l4', name: '행정구제법', credit: 2 },
-        ],
-        admin: [
-          { id: 'le_a1', name: '전공심화세미나 I', credit: 2 }, { id: 'le_a2', name: '전공심화세미나 II', credit: 2 },
-          { id: 'le_a3', name: '행정계량분석', credit: 2 }, { id: 'le_a10', name: '여성폭력과 안전', credit: 2, code: 'G' },
-        ]
+        law: [{ id: 'le_l1', name: '전공심화세미나 I', credit: 2 }, { id: 'le_l2', name: '전공심화세미나 II', credit: 2 }, { id: 'le_l3', name: '경찰과 인권', credit: 2, code: 'H' }],
+        admin: [{ id: 'le_a1', name: '전공심화세미나 I', credit: 2 }, { id: 'le_a2', name: '전공심화세미나 II', credit: 2 }, { id: 'le_a3', name: '자치행정론', credit: 2 }]
       }
     },
     policeMajor: {
       foundation: [
-        { id: 'pf_1', name: '형법총론', credit: 3 }, { id: 'pf_2', name: '형법각론 I', credit: 3 },
-        { id: 'pf_3', name: '형법각론 II', credit: 2 }, { id: 'pf_4', name: '형사소송법 I', credit: 3 }, { id: 'pf_5', name: '형사소송법 II', credit: 2 },
+        { id: 'pf_1', name: '형법총론', credit: 3 }, { id: 'pf_2', name: '형법각론 I', credit: 3 }, { id: 'pf_3', name: '형법각론 II', credit: 2 }, { id: 'pf_4', name: '형사소송법 I', credit: 3 }, { id: 'pf_5', name: '형사소송법 II', credit: 2 },
       ],
       mandatory: [
-        { id: 'pm_1', name: '생활안전론', credit: 2 }, { id: 'pm_2', name: '범죄피해자보호론', credit: 2 },
-        { id: 'pm_3', name: '경비경찰/대테러', credit: 2 }, { id: 'pm_4', name: '경찰교통론', credit: 2 },
+        { id: 'pm_1', name: '생활안전론', credit: 2 }, { id: 'pm_2', name: '범죄피해자보호론', credit: 2 }, { id: 'pm_3', name: '경비경찰/대테러', credit: 2 }, { id: 'pm_4', name: '경찰교통론', credit: 2 },
       ],
       mandatoryOption: [
-        { id: 'pmo_1', name: '공공안녕정보론', credit: 2 }, { id: 'pmo_2', name: '안보수사론', credit: 2 },
-        { id: 'pmo_3', name: '국제경찰론', credit: 2 }, { id: 'pmo_4', name: '경찰경무론', credit: 2 },
+        { id: 'pmo_1', name: '공공안녕정보론', credit: 2 }, { id: 'pmo_2', name: '안보수사론', credit: 2 }, { id: 'pmo_3', name: '국제경찰론', credit: 2 }, { id: 'pmo_4', name: '경찰경무론', credit: 2 },
       ],
-      electives: [
-        { id: 'pe_1', name: '경찰관직무집행법', credit: 2 }, { id: 'pe_2', name: '범죄수사기법', credit: 2 },
-      ]
+      electives: [{ id: 'pe_1', name: '경찰관직무집행법', credit: 2 }, { id: 'pe_2', name: '범죄수사기법', credit: 2 }]
     }
   };
 
@@ -244,7 +223,7 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans p-4 md:p-10">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans p-4 md:p-10 pb-24">
       <div className="max-w-6xl mx-auto">
         
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
@@ -277,11 +256,10 @@ const App = () => {
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-6">
             <div className="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100 text-left">
-              <h2 className="text-lg font-black mb-6 flex items-center gap-2 uppercase tracking-tighter">
+              <h2 className="text-lg font-black mb-6 flex items-center gap-2 uppercase tracking-tighter text-slate-700">
                 <LayoutDashboard size={20} className="text-blue-600" /> Summary
               </h2>
               <ProgressBar label="Total Credits" current={stats.total} target={140} />
@@ -300,7 +278,7 @@ const App = () => {
             </div>
 
             <div className="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100 text-left">
-              <h2 className="text-lg font-black mb-4">Non-Credit Requirements</h2>
+              <h2 className="text-lg font-black mb-4 text-slate-700">Requirement Check</h2>
               <div className="grid grid-cols-1 gap-1.5">
                 {Object.keys(nonCredit).map(key => (
                   <div 
@@ -331,7 +309,7 @@ const App = () => {
               {['liberal', 'general', 'police'].map(tab => (
                 <button 
                   key={tab} onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-2 rounded-xl text-xs font-black whitespace-nowrap transition-all uppercase tracking-widest ${activeTab === tab ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`px-6 py-2 rounded-xl text-xs font-black whitespace-nowrap transition-all uppercase tracking-widest ${activeTab === tab ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   {tab === 'liberal' ? '교양' : tab === 'general' ? '일반전공' : '경찰전공'}
                 </button>
@@ -345,7 +323,7 @@ const App = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pb-24">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {activeTab === 'liberal' && (
                 <>
                   <div className="md:col-span-2 text-left text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-1">Mandatory</div>
@@ -374,6 +352,19 @@ const App = () => {
           </main>
         </div>
       </div>
+
+      {/* Footer Info with Creator Name */}
+      <footer className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-slate-100 p-4 z-50">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+             Made with <Heart size={10} className="text-red-500 fill-red-500" /> by <span className="text-slate-700">경찰대학 44기 20240017 민유정</span>
+          </div>
+          <div className="text-xs font-black text-slate-900 flex items-center gap-4">
+             <span>Total: {stats.total}/140</span>
+             <span className="text-blue-600">{Math.round((stats.total/140)*100)}% Complete</span>
+          </div>
+        </div>
+      </footer>
 
       {/* Sync Modal */}
       {showSyncModal && (
